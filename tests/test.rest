@@ -1,0 +1,149 @@
+@host = http://localhost
+@port = 4444
+@server = {{host}}:{{port}}
+
+@adminId = 1
+@userId = 2
+@forecastId = 1
+@testEmail = weatherapi-test@example.com
+@testPassword = TestPass1!
+
+### GET THE API WELCOME MESSAGE
+GET {{server}}/
+Content-Type: application/json
+
+### REGISTER A USER
+POST {{server}}/users/register
+Content-Type: application/json
+
+{
+    "name": "Weather API Test",
+    "email": "{{testEmail}}",
+    "passwd": "{{testPassword}}",
+    "confirm": "{{testPassword}}"
+}
+
+### LOG IN A USER
+POST {{server}}/users/login
+Content-Type: application/json
+
+{
+    "email": "{{testEmail}}",
+    "passwd": "{{testPassword}}"
+}
+
+### GET A USER PROFILE BY ID
+GET {{server}}/users/{{userId}}
+Content-Type: application/json
+
+### UPDATE A USER PROFILE
+PATCH {{server}}/users/{{userId}}
+Content-Type: application/json
+
+{
+    "username": "Weather API Test Updated",
+    "email": "{{testEmail}}",
+    "luid": "{{userId}}"
+}
+
+### CHANGE A USER PASSWORD
+POST {{server}}/users/{{userId}}/passmod
+Content-Type: application/json
+
+{
+    "oldpass": "{{testPassword}}",
+    "newpass": "NewPass2!",
+    "confirm": "NewPass2!"
+}
+
+### CREATE A WEATHER FORECAST
+POST {{server}}/weather
+Content-Type: application/json
+
+{
+    "luid": "{{adminId}}",
+    "date": "2026-10-18",
+    "location": "Weather API Test City",
+    "temp_min": 10,
+    "temp_max": 20,
+    "weather_type": "sunny",
+    "precipitation": 0,
+    "precipitation_probability": 0,
+    "wind_speed": 5,
+    "wind_direction": "north",
+    "humidity": 50,
+    "pressure": 1013,
+    "uv_index": 3
+}
+
+### GET ALL WEATHER FORECASTS
+GET {{server}}/weather
+Content-Type: application/json
+
+### GET A WEATHER FORECAST BY ID
+GET {{server}}/weather/{{forecastId}}
+Content-Type: application/json
+
+### UPDATE A WEATHER FORECAST BY ID
+PATCH {{server}}/weather/{{forecastId}}
+Content-Type: application/json
+
+{
+    "luid": "{{adminId}}",
+    "date": "2026-10-18",
+    "location": "Weather API Test City Updated",
+    "temp_min": 11,
+    "temp_max": 21,
+    "weather_type": "cloudy",
+    "precipitation": 1,
+    "precipitation_probability": 10,
+    "wind_speed": 6,
+    "wind_direction": "east",
+    "humidity": 55,
+    "pressure": 1012,
+    "uv_index": 2
+}
+
+### DELETE A WEATHER FORECAST BY ID
+# Deletes the forecast with forecastId. Run this request last.
+DELETE {{server}}/weather/{{forecastId}}
+Content-Type: application/json
+
+{
+    "luid": "{{adminId}}"
+}
+
+### GET ALL USERS AS AN ADMIN
+POST {{server}}/admin/users
+Content-Type: application/json
+
+{
+    "luid": "{{adminId}}"
+}
+
+### CHANGE A USER'S STATUS AS AN ADMIN
+# This toggles the user's status; send it twice to restore the original status.
+PATCH {{server}}/admin/status
+Content-Type: application/json
+
+{
+    "uid": "{{userId}}",
+    "luid": "{{adminId}}"
+}
+
+### GET USER AND FORECAST STATISTICS AS AN ADMIN
+POST {{server}}/admin/statistics
+Content-Type: application/json
+
+{
+    "luid": "{{adminId}}"
+}
+
+### DELETE A USER PROFILE
+# Deletes the user with userId. Run this request last.
+DELETE {{server}}/users/{{userId}}
+Content-Type: application/json
+
+{
+    "luid": "{{userId}}"
+}
